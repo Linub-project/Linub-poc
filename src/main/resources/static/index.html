@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Linub Terminal POC</title>
+</head>
+
+<body>
+
+<textarea id="output"
+          style="width:800px;height:400px;">
+</textarea>
+
+<br>
+
+<input id="command"
+       style="width:700px;">
+
+<button onclick="sendCommand()">
+    Send
+</button>
+
+<script>
+
+    const socket =
+        new WebSocket(
+            "ws://100.119.102.19:8082/ws/terminal"
+        );
+
+    socket.onopen = () => {
+        console.log("connected");
+    };
+
+    socket.onmessage = (event) => {
+
+        const output =
+            document.getElementById("output");
+
+        output.value += event.data;
+
+        output.scrollTop =
+            output.scrollHeight;
+    };
+
+    function sendCommand() {
+
+        const input =
+            document.getElementById("command");
+
+        socket.send(
+            input.value + "\n"
+        );
+
+        input.value = "";
+    }
+
+</script>
+
+</body>
+</html>
