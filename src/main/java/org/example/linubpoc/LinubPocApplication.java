@@ -1,6 +1,7 @@
 package org.example.linubpoc;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.linubpoc.util.FontLoader;
 import org.openpdf.text.*;
 import org.openpdf.text.pdf.*;
 import org.springframework.boot.SpringApplication;
@@ -21,13 +22,23 @@ public class LinubPocApplication {
     public static void main(String[] args) {
         SpringApplication.run(LinubPocApplication.class, args);
 
-//        printString("spring boot");
+        printString("한글 인코딩 테스트");
 //        printTable();
-        printTwoParagraph();
+//        printTwoParagraph();
     }
 
     private static void printString(String str) {
         Path filePath = DIR.resolve("test.pdf");
+
+        BaseFont boldFont = FontLoader.getFont(true);
+        BaseFont baseFont = FontLoader.getFont(false);
+        Font n1 = new Font(baseFont, 12);
+        Font n2 = new Font(baseFont, 12);
+        Font f1 = new Font(baseFont, 12, Font.NORMAL);
+        Font f2 = new Font(baseFont, 12, Font.BOLD);
+        Font bf1 = new Font(boldFont, 12, Font.NORMAL);
+        Font bf2 = new Font(boldFont, 12, Font.BOLD);
+
 
         if(filePath.toFile().exists()) {
             filePath.toFile().delete();
@@ -39,7 +50,12 @@ public class LinubPocApplication {
             PdfWriter.getInstance(document, outputStream);
 
             document.open();
-            document.add(new Paragraph(str));
+            document.add(new Paragraph(str, n1));
+            document.add(new Paragraph(str, n2));
+            document.add(new Paragraph(str, f1));
+            document.add(new Paragraph(str, f2));
+            document.add(new Paragraph(str, bf1));
+            document.add(new Paragraph(str, bf2));
             document.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,7 +142,15 @@ public class LinubPocApplication {
     }
 
     private static void printTwoParagraph() {
-        Path filePath = DIR.resolve("table_test.pdf");
+        Path filePath = DIR.resolve("two_paragraph.pdf");
+
+        if(filePath.toFile().exists()) {
+            filePath.toFile().delete();
+            log.info("delete existing file");
+        }
+
+        BaseFont baseFont = FontLoader.getFont(true);
+        Font font = new Font(baseFont, 12, Font.NORMAL);
 
         Document document = new Document(PageSize.A4);
 
@@ -170,11 +194,11 @@ public class LinubPocApplication {
 
             // 4. 시험지 내용 예시 추가 (질문 및 보기)
             for (int i = 1; i <= 10; i++) {
-                ct.addElement(new Paragraph("\n[문제 " + i + "] 다음 중 올바른 것을 고르시오."));
-                ct.addElement(new Paragraph("① 보기 1번 내용"));
-                ct.addElement(new Paragraph("② 보기 2번 내용"));
-                ct.addElement(new Paragraph("③ 보기 3번 내용"));
-                ct.addElement(new Paragraph("④ 보기 4번 내용"));
+                ct.addElement(new Paragraph("\n[Q. " + i + "] 한글 인코딩 테스트"));
+                ct.addElement(new Paragraph("① multiple 1"));
+                ct.addElement(new Paragraph("② multiple 2"));
+                ct.addElement(new Paragraph("③ multiple 3"));
+                ct.addElement(new Paragraph("④ multiple 4"));
             }
 
             // 5. 텍스트를 단에 채워 넣기 (왼쪽 단 -> 다 차면 오른쪽 단)
@@ -211,6 +235,8 @@ public class LinubPocApplication {
                     ct.setSimpleColumn(left_llx, left_lly, left_urx, left_ury);
                 }
             }
+
+            document.add(new Paragraph("한글 인코딩 테스트", font));
 
             document.close();
             System.out.println("시험지 형식의 2단 PDF가 생성되었습니다!");
