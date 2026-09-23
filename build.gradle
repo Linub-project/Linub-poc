@@ -28,6 +28,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // PDF
+    implementation 'org.apache.pdfbox:pdfbox:3.0.7'
 }
 
 tasks.named('test') {
